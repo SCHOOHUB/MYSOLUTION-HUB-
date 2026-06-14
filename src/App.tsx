@@ -21,6 +21,18 @@ export default function App() {
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [trackingQuery, setTrackingQuery] = useState("");
 
+  // Theme support state (Lite/Dark)
+  const [theme, setTheme] = useState<"light" | "dark">(() => {
+    const saved = localStorage.getItem("mysolution_hub_theme");
+    return (saved as "light" | "dark") || "light";
+  });
+
+  const toggleTheme = () => {
+    const next = theme === "light" ? "dark" : "light";
+    setTheme(next);
+    localStorage.setItem("mysolution_hub_theme", next);
+  };
+
   // FAQ interactive state
   const [openFaqIdx, setOpenFaqIdx] = useState<number | null>(null);
 
@@ -82,7 +94,11 @@ export default function App() {
   });
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans selection:bg-[#0F8A5F] selection:text-white">
+    <div className={`min-h-screen flex flex-col font-sans selection:bg-[#0F8A5F] selection:text-white transition-colors duration-300 ${
+      theme === "dark" 
+        ? "dark bg-slate-950 text-slate-100" 
+        : "bg-slate-50 text-slate-800"
+    }`}>
       {/* 40px top-alert notice block (mimicking Moniepoint premium advisory layout) */}
       <div className="bg-[#0A192F] text-slate-350 text-[11px] py-2 px-4 border-b border-slate-900 overflow-hidden text-center flex justify-center items-center gap-2">
         <span className="flex h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
@@ -98,6 +114,8 @@ export default function App() {
         activeCategory={activeCategory}
         onCategorySelect={setActiveCategory}
         onTrackOrderClick={() => handleTriggerTracking("#WP20273")}
+        theme={theme}
+        onToggleTheme={toggleTheme}
       />
 
       {/* Hero Visual Showcase */}
@@ -111,27 +129,27 @@ export default function App() {
       <main id="services-section" className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex-1">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
           <div>
-            <span className="text-[#0F8A5F] text-xs font-bold tracking-wider uppercase px-3 py-1 bg-emerald-100 rounded-full">
+            <span className="text-[#0F8A5F] dark:text-emerald-400 text-xs font-bold tracking-wider uppercase px-3 py-1 bg-emerald-100 dark:bg-[#0F8A5F]/20 rounded-full">
               Main Catalog
             </span>
-            <h2 className="text-3xl font-black mt-3 text-slate-900 tracking-tight leading-none">
+            <h2 className="text-3xl font-black mt-3 text-slate-900 dark:text-white tracking-tight leading-none">
               Explore Available Services
             </h2>
-            <p className="text-slate-550 text-sm mt-2 leading-relaxed">
+            <p className="text-slate-500 dark:text-slate-400 text-sm mt-2 leading-relaxed">
               Select any documentation, academic entry, or legal card registration service to proceed to the secure checkout.
             </p>
           </div>
 
           {/* Quick search input indicator if main search is filled */}
           {searchQuery && (
-            <div className="bg-emerald-50 text-[#0F8A5F] px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 border border-emerald-100 animate-fade-in self-start md:self-auto">
-              <Sparkles className="w-4 h-4" />
+            <div className="bg-emerald-50 dark:bg-emerald-500/10 text-[#0F8A5F] dark:text-emerald-400 px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 border border-emerald-100 dark:border-emerald-500/10 animate-fade-in self-start md:self-auto">
+              <Sparkles className="w-4 h-4 animate-spin-slow" />
               <span>
                 Found {filteredServices.length} result(s) for "{searchQuery}"
               </span>
               <button
                 type="button"
-                className="font-bold underline ml-1 cursor-pointer"
+                className="font-bold underline ml-1 cursor-pointer hover:text-[#12a16f]"
                 onClick={() => setSearchQuery("")}
               >
                 Clear
@@ -145,7 +163,7 @@ export default function App() {
           <button
             type="button"
             onClick={() => setActiveCategory("all")}
-            className={`flex-shrink-0 px-5 py-3 rounded-full text-xs font-bold transition-all cursor-pointer ${activeCategory === "all" ? "bg-[#0A192F] text-white border border-transparent shadow-md" : "bg-white hover:bg-slate-100 text-slate-650 border border-slate-200"}`}
+            className={`flex-shrink-0 px-5 py-3 rounded-full text-xs font-bold transition-all cursor-pointer ${activeCategory === "all" ? "bg-slate-900 dark:bg-[#0F8A5F] text-white border border-transparent shadow-md" : "bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-650 dark:text-slate-300 border border-slate-200 dark:border-slate-800"}`}
           >
             All Services ({SERVICES.length})
           </button>
@@ -157,7 +175,7 @@ export default function App() {
                 key={cat.slug}
                 type="button"
                 onClick={() => setActiveCategory(cat.slug)}
-                className={`flex-shrink-0 px-5 py-3 rounded-full text-xs font-bold transition-all cursor-pointer ${activeCategory === cat.slug ? "bg-[#0A192F] text-white border border-transparent shadow-md" : "bg-white hover:bg-slate-100 text-slate-650 border border-slate-200"}`}
+                className={`flex-shrink-0 px-5 py-3 rounded-full text-xs font-bold transition-all cursor-pointer ${activeCategory === cat.slug ? "bg-slate-900 dark:bg-[#0F8A5F] text-white border border-transparent shadow-md" : "bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-650 dark:text-slate-300 border border-slate-200 dark:border-slate-800"}`}
               >
                 {cat.name} ({count})
               </button>
@@ -179,10 +197,10 @@ export default function App() {
             </AnimatePresence>
           </div>
         ) : (
-          <div className="text-center py-16 bg-white rounded-3xl border border-dashed border-slate-200 max-w-md mx-auto">
-            <HelpCircle className="w-12 h-12 text-slate-400 mx-auto mb-3" />
-            <h4 className="font-bold text-slate-900">No matching services found</h4>
-            <p className="text-slate-500 text-xs mt-1 px-4 leading-relaxed">
+          <div className="text-center py-16 bg-white dark:bg-slate-900 rounded-3xl border border-dashed border-slate-200 dark:border-slate-850 max-w-md mx-auto">
+            <HelpCircle className="w-12 h-12 text-slate-400 mx-auto mb-3 animate-bounce-slow" />
+            <h4 className="font-bold text-slate-900 dark:text-slate-150">No matching services found</h4>
+            <p className="text-slate-500 dark:text-slate-400 text-xs mt-1 px-4 leading-relaxed">
               We offer customizable registrations not listed. Click the floating WhatsApp support lines below to submit custom requisitions directly to our registry officers.
             </p>
             <button
@@ -191,7 +209,7 @@ export default function App() {
                 setActiveCategory("all");
                 setSearchQuery("");
               }}
-              className="bg-[#0A192F] text-white text-xs font-bold px-6 py-2.5 rounded-full mt-4 cursor-pointer"
+              className="bg-[#0A192F] dark:bg-emerald-600 text-white text-xs font-bold px-6 py-2.5 rounded-full mt-4 cursor-pointer hover:opacity-95"
             >
               Reset Filters
             </button>
@@ -200,7 +218,7 @@ export default function App() {
       </main>
 
       {/* Interactive central Order Tracker component */}
-      <section className="py-16 md:py-24 bg-slate-100 border-t border-b border-slate-200">
+      <section className="py-16 md:py-24 bg-slate-100 dark:bg-slate-900/10 border-t border-b border-slate-200 dark:border-slate-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <OrderTracker
             orders={orders}
@@ -220,16 +238,16 @@ export default function App() {
       <Testimonials />
 
       {/* Interactive FAQs Accordion */}
-      <section id="faq-section" className="py-20 bg-white border-t border-slate-100">
+      <section id="faq-section" className="py-20 bg-white dark:bg-slate-950 border-t border-slate-100 dark:border-slate-900">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <span className="text-[#0F8A5F] text-xs font-bold tracking-wider uppercase px-3 py-1 bg-emerald-100 rounded-full">
+            <span className="text-[#0F8A5F] dark:text-emerald-400 text-xs font-bold tracking-wider uppercase px-3 py-1 bg-emerald-100 dark:bg-[#0F8A5F]/20 rounded-full">
               Common Knowledge
             </span>
-            <h3 className="text-3xl font-black mt-4 text-slate-900 tracking-tight leading-none">
+            <h3 className="text-3xl font-black mt-4 text-slate-900 dark:text-white tracking-tight leading-none">
               Client Support Queries
             </h3>
-            <p className="text-slate-500 text-sm mt-3">
+            <p className="text-slate-500 dark:text-slate-400 text-sm mt-3">
               Review immediate parameters regarding physical shipping, dynamic registrations, and WAEC e-PIN clearance tokens.
             </p>
           </div>
@@ -240,16 +258,16 @@ export default function App() {
               return (
                 <div
                   key={idx}
-                  className="rounded-2xl border border-slate-150 transition-all duration-300"
+                  className="rounded-2xl border border-slate-150 dark:border-slate-850 transition-all duration-300"
                 >
                   <button
                     id={`faq-btn-${idx}`}
                     type="button"
                     onClick={() => setOpenFaqIdx(isOpen ? null : idx)}
-                    className="w-full text-left px-5 py-4 flex justify-between items-center bg-slate-50 hover:bg-slate-100/60 rounded-t-2xl focus:outline-none cursor-pointer"
+                    className="w-full text-left px-5 py-4 flex justify-between items-center bg-slate-50 dark:bg-slate-900 hover:bg-slate-100/60 dark:hover:bg-slate-850/60 rounded-t-2xl focus:outline-none cursor-pointer"
                   >
-                    <span className="font-bold text-slate-900 text-sm pr-4">{item.question}</span>
-                    <ChevronDown className={`w-4 h-4 text-slate-500 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+                    <span className="font-bold text-slate-900 dark:text-slate-100 text-sm pr-4">{item.question}</span>
+                    <ChevronDown className={`w-4 h-4 text-slate-500 dark:text-slate-400 transition-transform ${isOpen ? "rotate-180" : ""}`} />
                   </button>
 
                   <AnimatePresence initial={false}>
@@ -261,7 +279,7 @@ export default function App() {
                         transition={{ duration: 0.25 }}
                         className="overflow-hidden"
                       >
-                        <p className="px-5 pb-5 pt-3 text-xs leading-relaxed text-slate-600 bg-white rounded-b-2xl">
+                        <p className="px-5 pb-5 pt-3 text-xs leading-relaxed text-slate-600 dark:text-slate-350 bg-white dark:bg-slate-900/40 rounded-b-2xl">
                           {item.answer}
                         </p>
                       </motion.div>

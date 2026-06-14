@@ -249,7 +249,7 @@ export const SERVICES: Service[] = [
   // IDENTITY & DOCUMENT SERVICES
   {
     id: "nin-enroll",
-    name: "NIN Services",
+    name: "NIN SERVICES",
     description: "Pre-enrollment, official schedule booking, name correction requests, or date of birth modifications on NIMC portal.",
     category: "identity",
     priceRaw: 5500,
@@ -573,15 +573,17 @@ export const SERVICES: Service[] = [
     ],
   },
   {
-    id: "recruitment-app",
-    name: "Active Recruiters Email Application Campaign",
-    description: "Targeted outbound letters delivering candidate profiles directly to premium private agencies in Lagos/Abuja.",
-    category: "employment",
-    priceRaw: 6000,
-    estimatedTime: "48 Hours",
+    id: "essential-student-docs",
+    name: "Essential Student Documents",
+    description: "Applications for university transcripts, statement of results, certificate collection, or student ID replacements.",
+    category: "education",
+    priceRaw: 12000,
+    estimatedTime: "3 - 5 Days",
     fields: [
-      { name: "targetSectors", label: "Preferred Industries / Sectors", placeholder: "e.g. Banking, Oil & Gas, Fintech", type: "text", required: true },
-      { name: "targetRoles", label: "Target Role Titles", placeholder: "e.g. Junior Developer, Sales Executive", type: "text", required: true },
+      { name: "institutionName", label: "Tertiary Institution Name", placeholder: "e.g., University of Lagos, UI, UNN", type: "text", required: true },
+      { name: "matricNo", label: "Matriculation / Registration Number", placeholder: "e.g., 2018/104958", type: "text", required: true },
+      { name: "documentType", label: "Document Requested", placeholder: "", type: "select", required: true, options: ["Academic Transcript", "Statement of Results", "Degree Certificate Collection", "Student ID Replacement", "English Proficiency Letter"] },
+      { name: "gradYear", label: "Year of Graduation", placeholder: "e.g., 2022", type: "text", required: true },
     ],
   },
 
@@ -728,7 +730,7 @@ export const MOCK_ORDERS: Order[] = [
   {
     id: "#NIN1129",
     serviceId: "nin-enroll",
-    serviceName: "NIN Services",
+    serviceName: "NIN SERVICES",
     category: "identity",
     userName: "Shehu Musa",
     userEmail: "shehumusa@yahoo.com",
