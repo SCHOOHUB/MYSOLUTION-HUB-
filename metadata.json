@@ -1,0 +1,6 @@
+{
+  "name": "MYSOLUTION HUB",
+  "description": "Your Trusted Digital Service Hub in Nigeria - Fast, secure, and stress-free educational, documentation, business, and cyber services in Nigeria.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
